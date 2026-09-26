@@ -1,0 +1,112 @@
+<head>
+  <title>Search Page</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      height: 100vh;
+      position: relative;
+    }
+
+    .weather {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      text-align: right;
+      font-family: 'Roboto', sans-serif;
+    }
+    .center-block {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .time {
+      margin: 0;
+      font-size: 80px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .greeting {
+      margin: 10px 0 30px 0;
+      font-size: 36px;
+      font-family: 'Roboto', sans-serif;
+      color: #6E6CDF
+    }
+
+    .search-bar {
+      width: 600px;
+      margin-bottom: 30px;
+      background-color: #f0f0f0;
+      border-radius: 20px;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+
+    .search-bar input {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 16px;
+      padding: 12px 20px;
+      border: none;
+      background-color: #f0f0f0;
+      outline: none;
+    }
+
+    .icons-row {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .icon {
+      background-color: #f0f0f0;
+      border-radius: 14px;
+      padding: 6px;
+      margin: 0 5px;
+    }
+
+    .icon a {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon img {
+      width: 50%;
+      height: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather">
+    <div class="temperature">36°</div>
+    <div style="color: #6E6CDF;" class="city">Ahmedabad</div>
+  </div>
+
+  <div class="center-block">
+    <div class="time">09:11:01</div>
+    <div class="greeting">Good Morning, Saad.</div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search">
+    </div>
+
+    <div class="icons-row">
+      <div class="icon"><a href="https://www.youtube.com/?app=desktop&hl=ru"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTKgdFd49HZNNAYDGFGy75dKWocqR-sj6H5JLRY0iGBA&s=10" alt="icon1"></a></div>
+      <div class="icon"><a href="https://chatgpt.com/"><img src="https://cdn-icons-png.flaticon.com/256/11865/11865326.png" alt="icon2"></a></div>
+      <div class="icon"><a href="https://ya.ru/?utm_referrer=https%3A%2F%2Fwww.google.com%2F"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpv_4PWOOl8lQah9e5-fJpdihbZa3D5F1cAjEFuHCibXOyu3MBFcAOUq8&s=10" alt="icon3"></a></div>
+      <div class="icon"><a href="https://www.deepseek.com/en/"><img src="https://deepseekcom.ru/wp-content/uploads/2025/02/deepseek-logo.png"></a></div>
+      <div class="icon"><a href="https://github.com"><img src="https://cdn-icons-png.flaticon.com/512/1051/1051377.png" alt="icon5"></a></div>
+      <div class="icon"><a href="https://ru.linkedin.com/"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7ocBfV_mI-h4zf-fsMWfoFbLuJ1c3ZeFcTF4j6y2uujdZIlBtHNeJM_A&s=10" alt="icon6"></a></div>
+      <div class="icon"><a href="https://www.youtube.com/watch?v=HRbW75fYLvo"><img src="https://png.pngtree.com/element_our/sm/20180516/sm_5afbe35ff3ec9.jpg" alt="icon6"></a></div>
+    </div>
+  </div>
+</body>

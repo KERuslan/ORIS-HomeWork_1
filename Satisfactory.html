@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Satisfactory Wiki</title>
+<style>
+  :root{
+    --bg: #0b0c0d;
+    --bg-panel: #292a2b;
+    --bg-panel-2: #2b2b2c;
+    --border: #343536;
+    --text: #d9d9d9;
+    --text-muted: #a5a5a5;
+    --accent: #f39a19;
+    --link: #e79a2b;
+    --wiki-width: 100%;
+    color-scheme: dark;
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ min-width: 320px; }
+
+  body{
+    margin: 0;
+    background: #0b0c0d;
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  a{ color: var(--link); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+  img{ max-width: 100%; display: block; }
+
+  .topbar{
+    height: 30px;
+    min-height: 30px;
+    padding: 3px 8px;
+    background: #0b1733;
+    border-bottom: 1px solid #18284a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar .brand{ display: flex; align-items: center; gap: 12px; }
+  .topbar .brand img{ height: 21px; }
+  .topbar .deals{ display: flex; align-items: center; gap: 6px; font-size: 12px; color: #ddd; }
+  .topbar .deals img{ height: 18px; display: block; }
+  .topbar .user-links{ display: flex; gap: 12px; font-size: 12px; }
+  .topbar a{ color: #eee; }
+
+  .game-logo{
+    height: 86px;
+    padding: 3px 0 6px;
+    background: #000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .game-logo img{ height: 82px; width: auto; margin: 0 auto; }
+
+  .wrapper{
+    width: calc(100% - 16px);
+    max-width: none;
+    margin: 0 8px;
+    padding: 0 0 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .sidebar{ width: 132px; flex: 0 0 132px; }
+  .sidebar .block{
+    margin: 0 0 9px;
+    padding: 0 7px 7px;
+    background: #161718;
+    border-radius: 8px;
+  }
+  .sidebar .block h4{
+    margin: 0 -7px 6px;
+    padding: 7px 8px 5px;
+    background: #171819;
+    border-bottom: 1px solid #e58d24;
+    border-radius: 8px 8px 0 0;
+    font-size: 13px;
+    font-weight: normal;
+    text-align: center;
+    color: #eee;
+  }
+  .sidebar ul{ list-style: none; margin: 0; padding: 0; }
+  .sidebar li{ margin: 0; line-height: 1.2; }
+  .sidebar a{ display: block; padding: 1px 0; font-size: 12px; color: #e58e25; }
+  .sidebar a:hover{ color: #ffb64c; text-decoration: none; }
+
+  .content{
+    flex: 1;
+    min-width: 0;
+    padding: 0 8px 8px;
+    background: #292a2b;
+    border: 1px solid #343536;
+    box-sizing: border-box;
+  }
+
+  .page-tabs{
+    width: 100%;
+    min-height: 38px;
+    padding: 0 7px;
+    margin: 0;
+    background: #18191a;
+    border: 1px solid #343536;
+    border-radius: 5px 5px 0 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  .page-tabs .left, .page-tabs .right{ display: flex; align-items: center; }
+  .page-tabs a{ padding: 9px 10px; font-size: 13px; color: #e58d24; }
+  .page-tabs a:hover{ color: #ffad3f; text-decoration: none; }
+  .page-tabs a.active,
+  .page-tabs .right a.active{
+    background: #e78f27;
+    color: #111;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  .page-tabs .search{
+    display: flex;
+    margin-left: 12px;
+    border: 1px solid #454545;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .page-tabs .search input{
+    border: 0;
+    background: #111;
+    color: var(--text);
+    padding: 6px 8px;
+    font-size: 13px;
+    height: 27px;
+  }
+  .page-tabs .search button{
+    border: 0;
+    background: #3a3d42;
+    color: #eee;
+    padding: 0 10px;
+    cursor: pointer;
+    height: 27px;
+  }
+
+  .site-notice{
+    width: 100%;
+    min-height: 68px;
+    margin: 16px 0;
+    padding: 10px 14px;
+    background: #3a2049;
+    border: 1px solid #5c2c6b;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #eee;
+  }
+  .site-notice .notice-icon{ font-size: 38px; line-height: 1; }
+  .site-notice h3{ margin: 0 0 2px; font-size: 16px; color: #f1e6ff; }
+  .site-notice p{ margin: 0; }
+  .site-notice a{ color: #e79a2b; }
+
+  .content-grid{
+    display: grid;
+    grid-template-columns: minmax(0,2fr) minmax(310px,.86fr);
+    gap: 10px;
+  }
+
+  .panel{
+    background: #292a2b;
+    border: 1px solid #363738;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 0 #070707;
+    overflow: hidden;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+  }
+
+  .panel-header,
+  .block-header{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 34px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #191a1a;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background:
+      url("https://satisfactory.wiki.gg/images/c/c9/Corner_top_left.png") no-repeat top left / 34px 34px,
+      url("https://satisfactory.wiki.gg/images/8/8e/Bolt.png") no-repeat bottom left / 20px 20px,
+      url("https://satisfactory.wiki.gg/images/8/8e/Bolt.png") no-repeat bottom right / 20px 20px,
+      url("https://satisfactory.wiki.gg/images/5/50/Middle.png") repeat-x center left,
+      linear-gradient(to bottom, #465461, #4F4136);
+  }
+  .panel-header::before,
+  .block-header::before{
+    content: "";
+    position: absolute;
+    z-index: 0;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url("https://satisfactory.wiki.gg/images/a/a8/Texture.png");
+    opacity: .1;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+  }
+  .panel-header h2{
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-family: 'SatisfactoryFont', Arial, sans-serif;
+    font-weight: normal;
+    font-size: 25px;
+    line-height: 1;
+    text-transform: uppercase;
+    text-align: center;
+    color: #eef1f3;
+    text-shadow: 0 2px 2px rgba(0,0,0,.85);
+  }
+  .panel-body{ padding: 12px 13px; background: #292a2b; color: #ddd; }
+  .panel-body p{ margin: 0 0 8px; }
+  .panel-body ul{ margin: 0; padding-left: 20px; }
+  .panel-body li{ margin-bottom: 4px; }
+  .panel-body.center{ text-align: center; }
+  .panel a{ color: #e89a2b; }
+
+  .update-table{ width: 100%; border-collapse: collapse; font-size: 13px; }
+  .update-table td{ padding: 4px 0; }
+  .update-table td:first-child{ text-align: right; padding-right: 8px; font-weight: bold; white-space: nowrap; color: #ddd; }
+  .update-table td:nth-child(2), .update-table td:nth-child(2) a{ color: #e58d24; }
+  .update-table td:nth-child(2) a:hover{ color: #ffad3f; }
+
+  .video-placeholder{ position: relative; background: #000; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
+  .video-placeholder img{ width: 100%; height: 100%; object-fit: cover; opacity: .6; }
+  .video-placeholder .play{ position: absolute; color: #fff; font-size: 14px; background: rgba(0,0,0,.6); padding: 8px 16px; border-radius: 4px; }
+
+  .social-row{ display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin-bottom: 8px; }
+  .social-row img{ height: 30px; }
+  .social-divider{ border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+
+  .featured-grid{ display: flex; flex-wrap: wrap; gap: 10px 14px; justify-content: space-around; text-align: center; }
+  .featured-item{ width: 92px; font-size: 11px; }
+  .featured-item img{ width: 70px; height: 70px; object-fit: contain; margin: 0 auto 6px; }
+
+  .wiki-directory{ width: 100%; margin: 0 0 10px; }
+  .wiki-directory .panel{ margin-bottom: 0; }
+  .nav-table{ background: #292a2b; }
+  .nav-table details{ margin: 0; background: #292a2b; }
+  .nav-table summary{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 31px;
+    box-sizing: border-box;
+    padding: 6px 42px 6px 12px;
+    background: #292a2b;
+    color: #eee;
+    border-bottom: 1px solid #a9641c;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    list-style: none;
+  }
+  .nav-table summary::-webkit-details-marker{ display: none; }
+  .nav-table summary::before{
+    content: '⚑';
+    position: absolute;
+    left: 9px;
+    color: #e58d24;
+    font-size: 10px;
+    opacity: .9;
+  }
+  .nav-table summary:hover{ background: #303132; }
+  .nav-table summary a{ color: #e58d24; text-decoration: none; }
+  .nav-table summary a:hover{ color: #ffad3f; }
+  .nav-table summary span{
+    position: absolute;
+    right: 8px;
+    color: #e58d24;
+    font-size: 12px;
+    font-weight: normal;
+  }
+  .nav-table details[open] summary span{ font-size: 0; }
+  .nav-table details[open] summary span::after{ content: '[Collapse]'; font-size: 12px; }
+  .nav-row{
+    padding: 7px 12px;
+    background: #292a2b;
+    color: #ddd;
+    border-bottom: 1px solid #444546;
+    text-align: left;
+    line-height: 1.6;
+  }
+  .nav-row:last-child{ border-bottom: 0; }
+  .nav-row b, .nav-row a{ color: #e58d24; }
+  .nav-row a:hover{ color: #ffad3f; }
+
+  .community{ width: 100%; margin: 0 0 10px; }
+  .community .panel{ margin-bottom: 0; }
+  .community-buttons{ display: flex; justify-content: space-around; gap: 7%; padding: 0 7% 9px; border-bottom: 1px solid #b86d1d; }
+  .community-buttons a{
+    flex: 1;
+    text-align: center;
+    background: linear-gradient(#151515,#050505);
+    border: 1px solid #000;
+    border-radius: 16px;
+    padding: 7px 10px;
+    color: #e99a2c;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,.08);
+  }
+  .create-intro{ text-align: center; padding: 7px 0 5px; border-bottom: 1px solid #9a5a1b; }
+  .create-intro p{ margin: 0 0 4px; }
+  .community .create-page{ margin: 0; display: flex; justify-content: center; gap: 8px; }
+  .community .create-page input{ width: 400px; height: 31px; background: #111; border: 1px solid #a05c18; color: var(--text); padding: 8px; }
+  .community .create-page button{ height: 31px; background: #aaa; color: #111; padding: 0 14px; font-weight: bold; border: none; cursor: pointer; }
+  .community-help{ padding: 8px 2px 2px; }
+  .community-help ul{ margin: 0; padding-left: 18px; }
+  .community-help li{ margin-bottom: 4px; }
+  .community-help strong{ color: #ddd; }
+
+  .page-meta-note{
+    width: 100%;
+    margin: 0 0 6px;
+    color: #7a7a7a;
+    font-size: 10px;
+    text-align: right;
+  }
+  .category-box{
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 7px 9px;
+    background: #202122;
+    border: 1px solid #9a5917;
+    color: #e89a2b;
+    font-size: 11px;
+    text-align: left;
+  }
+
+  footer{
+    width: 100%;
+    margin: 0 0 4px;
+    padding: 14px 10px 16px;
+    background: #111213;
+    border: 1px solid #252627;
+    border-radius: 10px;
+    color: #b7b7b7;
+    text-align: left;
+    font-size: 10px;
+  }
+  footer p{ margin: 0 0 7px; }
+  footer a{ color: #e38f25; margin: 0 8px 0 0; }
+
+  @media (max-width: 900px){
+    .wrapper{ width: calc(100% - 12px); margin: 0 6px; flex-direction: column; }
+    .sidebar{ width: 100%; flex-basis: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+    .sidebar .block{ flex: 1 1 150px; }
+    .content-grid{ grid-template-columns: 1fr; }
+    .page-tabs .right a:not(:last-of-type){ display: none; }
+    .site-notice{ margin-top: 10px; }
+    .game-logo{ height: 72px; }
+    .game-logo img{ height: 68px; }
+    .page-meta-note{ text-align: left; }
+  }
+</style>
+
+</head>
+<body>
+
+    <div class="topbar">
+    <div class="brand">
+      <a href="https://satisfactory.wiki.gg/"><img src="https://commons.wiki.gg/images/Network_header_logo.svg?feeba7" alt="wiki.gg"></a>
+      <a href="https://indiedeals.gg/" class="deals">
+        <img src="https://indiedeals.gg/logo.png">Indie game deals 
+      </a>
+    </div>
+    <div class="user-links">
+      ☼   |<a href="https://satisfactory.wiki.gg/wiki/Special:CreateAccount?returnto=Satisfactory+Wiki">Create account</a>
+      <a href="https://satisfactory.wiki.gg/wiki/Special:UserLogin?returnto=Satisfactory+Wiki">Log in</a>
+    </div>
+  </div>
+
+    <div class="game-logo">
+    <a href="https://satisfactory.wiki.gg/"><img src="https://satisfactory.wiki.gg/images/Site-logo.png?744174" alt="Satisfactory Wiki"></a>
+  </div>
+
+    <div class="wrapper">
+
+        <aside class="sidebar">
+      <div class="block">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="https://satisfactory.wiki.gg/">Main page</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki:Community_portal">Community portal</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Special:RecentChanges">Recent changes</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Special:Random">Random page</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki:Admin_noticeboard">Admin noticeboard</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki:Rules">Wiki rules</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki:Style_guide">Style guide</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4>Useful pages</h4>
+        <ul>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Category:Buildings">Buildings</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Category:Items">Items</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Category:Fluids">Fluids</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Milestones">Milestones</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/MAM">MAM</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/AWESOME_Sink">AWESOME Sink</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Space_Elevator">Space Elevator</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Power">Power</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Future_content">Future content</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Online_tools">Community tools</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4>Satisfactory links</h4>
+        <ul>
+          <li><a href="https://www.satisfactorygame.com/">Official website</a></li>
+          <li><a href="#https://questions.satisfactorygame.com/">Q&amp;A site</a></li>
+          <li><a href="https://lizarddoggo.com/">Official merch</a></li>
+          <li><a href="https://store.steampowered.com/app/526870/Satisfactory/">Steam</a></li>
+          <li><a href="https://www.epicgames.com/store/en-US/product/satisfactory/home">Epic Games Store</a></li>
+          <li><a href="https://www.humblebundle.com/store/satisfactory">Humble Bundle</a></li>
+          <li><a href="https://www.xbox.com/en-US/games/store/satisfactory/9NPR2CG6S95Q">Xbox</a></li>
+          <li><a href="https://store.playstation.com/en-us/product/UP4664-PPSA16634_00-SATISFACTORYGAME">PlayStation</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Special:WhatLinksHere/Satisfactory_Wiki">What links here</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Special:NewPage">New page</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Special:SpecialPages">Special pages</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki?action=dbdata">Database data</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki?action=info">Page information</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Special:CiteThisPage?page=Satisfactory_Wiki&id=56208&wpFormIdentifier=titleform">Cite this page</a></li>
+          <li><a href="https://satisfactory.wiki.gg/#">Expand all</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h4>In other languages</h4>
+        <ul>
+          <li><a href="https://satisfactory.wiki.gg/de/wiki/">Deutsch</a></li>
+          <li><a href="https://satisfactory.wiki.gg/fr/wiki/">Français</a></li>
+          <li><a href="https://satisfactory.wiki.gg/ru/wiki/">Русский</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/pt">Português</a></li>
+          <li><a href="#https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/it">Italiano</a></li>
+          <li><a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/zh">中文</a></li>
+        </ul>
+      </div>
+    </aside>
+
+        <main class="content">
+
+      <div class="page-tabs">
+        <div class="left">
+          <a href="https://satisfactory.wiki.gg/" class="active">Main page</a>
+          <a href="https://satisfactory.wiki.gg/wiki/Talk:Satisfactory_Wiki">Discussion</a>
+        </div>
+        <div class="right" style="align-items:center;">
+          <a href="https://satisfactory.wiki.gg/" class="active">Read</a>
+          <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki?action=edit">View source</a>
+          <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki?action=history">View history</a>
+          <form class="search" action="https://satisfactory.wiki.gg/wiki/Special:Search?search=&go=Go">
+            <input type="search" placeholder="Search Satisfactory Wiki">
+            <button type="submit">🔍</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="site-notice">
+        <div class="notice-icon">◉</div>
+        <div>
+          <h3>wiki.gg SATELLITE #4 accepting responses:</h3>
+          <p>Help improve wiki.gg by <a href="https://wiki.gg/go/sat04">filling out a survey</a>!</p>
+        </div>
+      </div>
+
+      <div class="content-grid">
+
+                <div>
+          <div class="panel">
+            <div class="panel-header"><h2>Welcome to the official Satisfactory Wiki</h2></div>
+            <div class="panel-body center">
+              <p>The <em>Satisfactory</em> guide and information source written and maintained by the community.</p>
+              <p>We are currently maintaining <a href="https://satisfactory.wiki.gg/wiki/Special:Statistics">9,466 pages (865 articles)</a>.</p>
+              <p>Please feel free to contribute by creating new articles or expanding existing ones.</p>
+              <p>Also check out the wiki in other languages:<br>
+                <a href="https://satisfactory.wiki.gg/de/wiki/">Deutsch</a> • <a href="https://satisfactory.wiki.gg/fr/wiki/">Français</a> • <a href="https://satisfactory.wiki.gg/ru/wiki/">Русский</a><br>
+                <a href="https://satisfactory.wiki.gg/wiki/Category:Translation_projects">other translation projects</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><h2>About Satisfactory</h2></div>
+            <div class="panel-body">
+              <p><a href="https://satisfactory.wiki.gg/wiki/Satisfactory">Satisfactory</a> is a game from <a href="https://satisfactory.wiki.gg/wiki/Coffee_Stain_Studios">Coffee Stain Studios</a>, the creators of <a href="https://en.wikipedia.org/wiki/Goat_Simulator">Goat Simulator</a> and the <a href="https://sanctum.gamepedia.com/">Sanctum</a>🔗 series. Satisfactory is a game of factory management and planet exploitation. As a pioneer working for <a href="https://satisfactory.wiki.gg/wiki/FICSIT_Inc.">FICSIT Inc.</a>, you are dropped onto an alien planet with a handful of tools and must harvest the planet's natural resources to construct increasingly complex factories for automating all your resources needs. After you are set up, it will be time to build the <a href="https://satisfactory.wiki.gg/wiki/Space_Elevator">Space Elevator</a> and begin Project Assembly, supplying FICSIT with increasingly numerous and complex components for their unknown purposes.</p>
+              <p>The main focus of the game lies in constructing <a href="https://satisfactory.wiki.gg/wiki/Buildings">buildings</a> and linking them together with <a href="https://satisfactory.wiki.gg/wiki/Conveyor_Belts">Conveyor Belts</a> so that your factory can handle the entire process of item construction for you, including mining, transport, delivery, and generating <a href="https://satisfactory.wiki.gg/wiki/Power">power</a> to keep itself running. More advanced pioneers will precisely adjust their buildings' <a href="https://satisfactory.wiki.gg/wiki/Clock_speed">clock speed</a> to maximize efficiency.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><h2>Features</h2></div>
+            <div class="panel-body">
+              <ul>
+                <li>A variety of item and fluid logistics including <a href="https://satisfactory.wiki.gg/wiki/Conveyor_Belts">Conveyor Belts</a>, <a href="https://satisfactory.wiki.gg/wiki/Conveyor_Lift">Lifts</a>, <a href="https://satisfactory.wiki.gg/wiki/Pipeline">Pipes</a> and more; all for transporting resources, components, fluids or yourself around.</li>
+                <li><a href="https://satisfactory.wiki.gg/wiki/Buildings">Buildings</a> for automated production of items. Hunt down <a href="https://satisfactory.wiki.gg/wiki/Power_Slug">Power Slugs</a> and <a href="https://satisfactory.wiki.gg/wiki/Somersloop">Somersloops</a> to improve their <a href="https://satisfactory.wiki.gg/wiki/Clock_speed">performance</a>.</li>
+                <li>A vast alien <a href="https://satisfactory.wiki.gg/wiki/World">world</a> to explore and exploit, featuring beautiful vistas and curious <a href="https://satisfactory.wiki.gg/wiki/Creatures">creatures</a>, including the community favorite <a href="https://satisfactory.wiki.gg/wiki/Lizard_Doggo">Lizard Doggo</a>.</li>
+                <li><a href="https://satisfactory.wiki.gg/wiki/Vehicles">Vehicles</a>, including <a href="https://satisfactory.wiki.gg/wiki/Truck">trucks</a> and <a href="https://satisfactory.wiki.gg/wiki/Electric_Locomotive">trains</a> for transporting yourself and large quantities of resources over great distances.</li>
+                <li>A <a href="https://satisfactory.wiki.gg/wiki/Story">story</a> to uncover - what is the 'Save the Day' program, and why is FICSIT counting on you?</li>
+                <li><a href="https://satisfactory.wiki.gg/wiki/Arachnophobia_Mode">Arachnophobia Mode</a>, to turn <a href="https://satisfactory.wiki.gg/wiki/Stinger">scary spiders</a> into equally terrifying cat abominations.</li>
+                <li>No base defense.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><h2>Featured Articles</h2></div>
+            <div class="panel-body">
+              <div class="featured-grid">
+                <div class="featured-item">
+                  <a href="https://satisfactory.wiki.gg/wiki/MAM"><img src="https://satisfactory.wiki.gg/images/thumb/MAM.png/100px-MAM.png?c85e80" alt="MAM"></a>
+                  <a href="https://satisfactory.wiki.gg/wiki/MAM">MAM</a>
+                </div>
+                <div class="featured-item">
+                  <a href="https://satisfactory.wiki.gg/wiki/Coal-Powered_Generator"><img src="https://satisfactory.wiki.gg/images/thumb/Coal-Powered_Generator.png/100px-Coal-Powered_Generator.png?564e1e" alt="Coal-Powered Generator"></a>
+                  <a href="https://satisfactory.wiki.gg/wiki/Coal-Powered_Generator">Coal-Powered Generator</a>
+                </div>
+                <div class="featured-item">
+                  <a href="https://satisfactory.wiki.gg/wiki/Hard_Drive"><img src="https://satisfactory.wiki.gg/images/thumb/Hard_Drive.png/100px-Hard_Drive.png?e40a92" alt="Hard Drive"></a>
+                  <a href="https://satisfactory.wiki.gg/wiki/Hard_Drive">Hard Drive</a>
+                </div>
+                <div class="featured-item">
+                  <a href="https://satisfactory.wiki.gg/wiki/Lizard_Doggo"><img src="https://satisfactory.wiki.gg/images/thumb/Lizard_Doggo.png/100px-Lizard_Doggo.png?4f2629" alt="Lizard Doggo"></a>
+                  <a href="https://satisfactory.wiki.gg/wiki/Lizard_Doggo">Lizard Doggo</a>
+                </div>
+                <div class="featured-item">
+                  <a href="https://satisfactory.wiki.gg/wiki/Power"><img src="https://satisfactory.wiki.gg/images/thumb/Power_Line.png/100px-Power_Line.png?d64b2c" alt="Power"></a>
+                  <a href="https://satisfactory.wiki.gg/wiki/Power">Power</a>
+                </div>
+                <div class="featured-item">
+                  <a href="https://satisfactory.wiki.gg/wiki/Space_Elevator"><img src="https://satisfactory.wiki.gg/images/thumb/Space_Elevator.png/100px-Space_Elevator.png?b12fda" alt="Space Elevator"></a>
+                  <a href="https://satisfactory.wiki.gg/wiki/Space_Elevator">Space Elevator</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <div>
+          <div class="panel">
+            <div class="panel-header"><h2>Updates</h2></div>
+            <div class="panel-body center">
+              <a href="https://satisfactory.wiki.gg/wiki/Patch_1.2.2.2" style="display:block;"><img src="https://satisfactory.wiki.gg/images/thumb/Update1.2_Sign_Logo.png/300px-Update1.2_Sign_Logo.png?ab35ad" alt="Update 1.2" style="margin:0 auto 10px;"></a>
+              <table class="update-table">
+                <tr><td>Major update:</td><td><a href="https://satisfactory.wiki.gg/wiki/Patch_1.2.2.2">1.2 release</a> (released 115 days ago)</td></tr>
+                <tr><td>Stable:</td><td><a href="https://satisfactory.wiki.gg/wiki/Patch_1.2.4.0">1.2.4.0</a> (released 45 days ago)</td></tr>
+                <tr><td>Experimental:</td><td><a href="https://satisfactory.wiki.gg/wiki/Patch_1.2.4.0">1.2.4.0</a> (released 45 days ago)</td></tr>
+              </table>
+              <p style="margin-top:10px;">
+                <a href="https://satisfactory.wiki.gg/wiki/Category:Patch_notes">Version history</a> • <a href="https://satisfactory.wiki.gg/wiki/Future_Content">Future content</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><h2>Featured Video</h2></div>
+            <div class="panel-body" style="padding:0;">
+              <a href="https://www.youtube.com/watch?v=aoHCYhlYjlc" class="video-placeholder">
+                <img src="https://ibb.co/b5Pntcm0" alt="Satisfactory 1.2 Launch Trailer">
+                <span class="play">▶ Load video</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header"><h2>Social Media</h2></div>
+            <div class="panel-body">
+              <div class="social-row">
+                <a href="https://www.satisfactorygame.com/"><img src="https://satisfactory.wiki.gg/images/thumb/Satisfactory_logo_full_color_square.png/48px-Satisfactory_logo_full_color_square.png?e4b0eb" alt="Official Website"></a>
+                <a href="https://lizarddoggo.com/"><img src="https://satisfactory.wiki.gg/images/thumb/Lizard_Doggo.png/48px-Lizard_Doggo.png?4f2629" alt="Official Merch"></a>
+                <a href="https://store.steampowered.com/app/526870/Satisfactory/"><img src="https://commons.wiki.gg/images/Steam.svg?6459ff" alt="Steam"></a>
+                <a href="https://www.epicgames.com/store/en-US/product/satisfactory/home"><img src="https://commons.wiki.gg/images/Epic_Games.svg?42a12c" alt="Epic Games"></a>
+                <a href="https://www.humblebundle.com/store/satisfactory"><img src="https://commons.wiki.gg/images/Humble.svg?7dbb58" alt="Humble Bundle"></a>
+              </div>
+              <hr class="social-divider">
+              <div class="social-row">
+                <a href="https://www.youtube.com/CoffeeStainStudios"><img src="https://commons.wiki.gg/images/YouTube.svg?61b4b3" alt="YouTube"></a>
+                <a href="https://www.twitch.tv/coffeestainstudiosdevs"><img src="https://commons.wiki.gg/images/Twitch.svg?f89d52" alt="Twitch"></a>
+                <a href="https://discord.gg/satisfactory"><img src="https://commons.wiki.gg/images/Discord.svg?386ce8" alt="Discord"></a>
+                <a href="https://www.facebook.com/SatisfactoryGame/"><img src="https://commons.wiki.gg/images/Facebook.svg?bfb7ee" alt="Facebook"></a>
+              </div>
+              <div class="social-row">
+                <a href="https://www.instagram.com/coffee_stain_studios/"><img src="https://commons.wiki.gg/images/Instagram.svg?da3977" alt="Instagram"></a>
+                <a href="https://www.reddit.com/r/SatisfactoryGame/"><img src="https://commons.wiki.gg/images/Reddit.svg?b0f60f" alt="Reddit"></a>
+                <a href="https://twitter.com/SatisfactoryAF/"><img src="https://commons.wiki.gg/images/X.svg?c51381" alt="X"></a>
+                <a href="https://www.tiktok.com/@satisfactorygame"><img src="https://commons.wiki.gg/images/TikTok.svg?e0a005" alt="TikTok"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+            <section class="wiki-directory" aria-label="Wiki navigation">
+        <div class="panel">
+          <div class="panel-header"><h2>Navigation</h2></div>
+          <div class="nav-table">
+            <details open><summary><a href="https://satisfactory.wiki.gg/wiki/Buildings">Buildings</a> <span>[Expand]</span></summary><div class="nav-row">
+              <b>Special</b> <a href="#">The HUB</a> · <a href="#">MAM</a> · <a href="#">Space Elevator</a> · <a href="#">AWESOME Sink</a> · <a href="#">AWESOME Shop</a> · <a href="#">Blueprint Designer</a> · <a href="#">Crafting Bench</a> · <a href="#">Equipment Workshop</a> · <a href="#">SPWN</a><br>
+              <b>Extractors</b> <a href="#">Miner Mk.1</a> · <a href="#">Miner Mk.2</a> · <a href="#">Miner Mk.3</a> · <a href="#">Water Extractor</a> · <a href="#">Oil Extractor</a> · <a href="#">Resource Well Pressurizer</a><br>
+              <b>Smelters</b> <a href="#">Smelter</a> · <a href="#">Foundry</a><br>
+              <b>Manufacturers</b> <a href="#">Constructor</a> · <a href="#">Assembler</a> · <a href="#">Manufacturer</a> · <a href="#">Packager</a> · <a href="#">Refinery</a> · <a href="#">Blender</a> · <a href="#">Particle Accelerator</a> · <a href="#">Quantum Encoder</a> · <a href="#">Converter</a><br>
+              <b>Generators</b> <a href="#">Biomass Burner</a> · <a href="#">Coal-Powered Generator</a> · <a href="#">Fuel-Powered Generator</a> · <a href="#">Geothermal Generator</a> · <a href="#">Nuclear Power Plant</a> · <a href="#">Alien Power Augmenter</a><br>
+              <b>Power Grid</b> <a href="#">Power Poles</a> · <a href="#">Wall Outlets</a> · <a href="#">Power Tower</a> · <a href="#">Power Line</a> · <a href="#">Power Switch</a> · <a href="#">Priority Power Switch</a> · <a href="#">Power Storage</a><br>
+              <b>Conveyors</b> <a href="#">Conveyor Belts</a> · <a href="#">Conveyor Lifts</a> · <a href="#">Conveyor Poles</a> · <a href="#">Conveyor Throughput Monitor</a><br>
+              <b>Pipelines</b> <a href="#">Pipelines</a> · <a href="#">Pipeline Supports</a> · <a href="#">Pipeline Junction</a> · <a href="#">Pipeline Pumps</a> · <a href="#">Valve</a><br>
+              <b>Sorting</b> <a href="#">Conveyor Merger</a> · <a href="#">Priority Merger</a> · <a href="#">Conveyor Splitter</a> · <a href="#">Smart Splitter</a> · <a href="#">Programmable Splitter</a><br>
+              <b>Vehicle Transport</b> <a href="#">Tractor</a> · <a href="#">Truck</a> · <a href="#">Cyber Wagon</a> · <a href="#">Explorer</a> · <a href="#">Factory Cart</a> · <a href="#">Truck Station</a> · <a href="#">Drone Port</a> · <a href="#">Drone</a><br>
+              <b>Railway Transport</b> <a href="#">Electric Locomotive</a> · <a href="#">Freight Car</a> · <a href="#">Train Station</a> · <a href="#">Freight Platform</a> · <a href="#">Empty Platform</a> · <a href="#">Railway</a> · <a href="#">Buffer Stop</a> · <a href="#">Train Signals</a><br>
+              <b>Hypertubes</b> <a href="#">Hypertube</a> · <a href="#">Hypertube Entrance</a> · <a href="#">Hypertube Supports</a> · <a href="#">Hypertube Junction</a><br>
+              <b>Pioneer Transport</b> <a href="#">Jump Pad</a> · <a href="#">U-Jelly Landing Pad</a> · <a href="#">Personnel Elevator</a> · <a href="#">Portal</a><br>
+              <b>Organization</b> <a href="#">Lights</a> · <a href="#">Signs</a> · <a href="#">Crate</a> · <a href="#">Personal Storage Box</a> · <a href="#">Basic Shelf Unit</a> · <a href="#">Storage Container</a> · <a href="#">Dimensional Depot Uploader</a> · <a href="#">Fluid Buffer</a> · <a href="#">Lookout Tower</a> · <a href="#">Radar Tower</a><br>
+              <b>Foundations</b> <a href="#">Foundations</a> · <a href="#">Ramps</a> · <a href="#">Inverted Ramps</a> · <a href="#">Quarter-Pipes</a> · <a href="#">Half Foundations</a><br>
+              <b>Walls</b> <a href="#">Basic Walls</a> · <a href="#">Ramp Walls</a> · <a href="#">Inverted Ramp Walls</a> · <a href="#">Tilted Walls</a> · <a href="#">Windows</a> · <a href="#">Doors</a> · <a href="#">Conveyor Walls</a><br>
+              <b>Architecture</b> <a href="#">Frames</a> · <a href="#">Roofs</a> · <a href="#">Beams</a> · <a href="#">Pillars</a> · <a href="#">Walkways</a> · <a href="#">Railings</a> · <a href="#">Stairs</a> · <a href="#">Ladder</a> · <a href="#">Large Fan</a>
+            </div></details>
+            <details><summary><a href="https://satisfactory.wiki.gg/wiki/Satisfactory">Satisfactory game mechanics</a> <span>[Expand]</span></summary><div class="nav-row">
+              <b>Player abilities</b> <a href="#">Codex</a> · <a href="#">Resource Scanner</a> · <a href="#">Build Gun</a> · <a href="#">Inventory</a> · <a href="#">Health</a> · <a href="#">Combat</a> · <a href="#">Movement</a> · <a href="#">Flashlight</a> · <a href="#">HUD</a> · <a href="#">Crate</a> · <a href="#">To-Do List</a><br>
+              <b>Unlockable abilities</b> <a href="#">Recipes</a> · <a href="#">Power</a> · <a href="#">Overclocking/Underclocking</a> · <a href="#">Production amplifier</a> · <a href="#">Customizer</a> · <a href="#">Map</a> · <a href="#">Productivity Display</a> · <a href="#">Head lift</a> · <a href="#">Blueprints</a> · <a href="#">Fuels</a> · <a href="#">FICSIT Productive Packer Deluxe</a><br>
+              <b>Progression</b> <a href="#">Story</a> · <a href="#">Drop-pod</a> · <a href="#">Onboarding</a> · <a href="#">Milestones</a> · <a href="#">MAM</a> · <a href="#">Alternate recipes</a> · <a href="#">Space Elevator</a> · <a href="#">AWESOME Sink</a> · <a href="#">AWESOME Shop</a><br>
+              <b>Seasonal events</b> <a href="#">April Fools' Day</a> · <a href="#">Anniversary</a> · <a href="#">FICSMAS</a><br>
+              <b>Environment</b> <a href="#">World</a> · <a href="#">Resource Node</a> · <a href="#">Resource Well</a> · <a href="#">Resource renewability</a> · <a href="#">Crash Site</a> · <a href="#">Radiation</a> · <a href="#">Poison Gas</a> · <a href="#">Cracked boulder</a> · <a href="#">Cave</a> · <a href="#">Weather</a><br>
+              <b>Gameplay</b> <a href="#">Controls</a> · <a href="#">Settings</a> · <a href="#">Future content</a> · <a href="#">Old unreleased content</a> · <a href="#">Online tools</a> · <a href="#">Community resources</a> · <a href="#">Creative Mode</a> · <a href="#">Acronyms</a> · <a href="#">Achievements</a> · <a href="#">Easter eggs</a> · <a href="#">Game menus</a> · <a href="#">Indicator Light</a> · <a href="#">Multiplayer</a> · <a href="#">Music</a><br>
+              <b>Technical</b> <a href="#">Installation and Startup</a> · <a href="#">Console release</a> · <a href="#">Debug console</a> · <a href="#">Launch arguments</a> · <a href="#">Save files</a> · <a href="#">System requirements</a> · <a href="#">Units</a> · <a href="#">Unreal Engine</a> · <a href="#">Modding</a><br>
+              <b>Guides: Basics</b> <a href="#">Walkthrough/How to play</a> · <a href="#">New Pioneer Guide</a> · <a href="#">Production line basics</a> · <a href="#">Advanced production line tips</a> · <a href="#">Picking an alternate recipe</a> · <a href="#">Independency</a> · <a href="#">Megafactory</a> · <a href="#">Aluminum Ingot production</a><br>
+              <b>Guides: Logistics</b> <a href="#">Manifold</a> · <a href="#">Balancer</a> · <a href="#">Pipeline manifold</a> · <a href="#">Prime Splitter Arrays</a> · <a href="#">Trains</a> · <a href="#">Train throughput</a><br>
+              <b>Guides: Dedicated servers</b> <a href="#">Dedicated servers</a> · <a href="#">Running as a Service</a> · <a href="#">Configuration files</a> · <a href="#">Automatic updates</a> · <a href="#">HTTPS API</a> · <a href="#">Lightweight Query API</a><br>
+              <b>Guides: Other</b> <a href="#">Hypertube cannon</a> · <a href="#">Hypertube brake</a> · <a href="#">Steam Deck &amp; Controller setup</a> · <a href="#">Extracting UI icons</a>
+            </div></details>
+            <details><summary><a href="https://satisfactory.wiki.gg/wiki/Items">Items</a> and <a href="https://satisfactory.wiki.gg/wiki/Fluids">Fluids</a> <span>[Expand]</span></summary><div class="nav-row">
+              <b>Raw resources</b> <a href="#">Iron Ore</a> · <a href="#">Copper Ore</a> · <a href="#">Limestone</a> · <a href="#">Coal</a> · <a href="#">Water</a> · <a href="#">Crude Oil</a> · <a href="#">Caterium Ore</a> · <a href="#">Bauxite</a> · <a href="#">Raw Quartz</a> · <a href="#">Sulfur</a> · <a href="#">Uranium</a> · <a href="#">Nitrogen Gas</a> · <a href="#">SAM</a><br>
+              <b>Flora and fauna</b> <a href="#">Leaves</a> · <a href="#">Wood</a> · <a href="#">Mycelia</a> · <a href="#">Alien Remains</a> · <a href="#">Power Slug</a><br>
+              <b>Healing items</b> <a href="#">Beryl Nut</a> · <a href="#">Paleberry</a> · <a href="#">Bacon Agaric</a> · <a href="#">Medicinal Inhaler</a><br>
+              <b>Special</b> <a href="#">FICSIT Coupon</a> · <a href="#">Hard Drive</a> · <a href="#">Mercer Sphere</a> · <a href="#">Somersloop</a><br>
+              <b>Components — Tier 0</b> <a href="#">Iron Ingot</a> · <a href="#">Iron Plate</a> · <a href="#">Iron Rod</a> · <a href="#">Copper Ingot</a> · <a href="#">Wire</a> · <a href="#">Cable</a> · <a href="#">Concrete</a> · <a href="#">Screws</a> · <a href="#">Reinforced Iron Plate</a> · <a href="#">Biomass</a><br>
+              <b>Components — Tier 2</b> <a href="#">Copper Sheet</a> · <a href="#">Rotor</a> · <a href="#">Modular Frame</a> · <a href="#">Smart Plating</a> · <a href="#">Solid Biofuel</a><br>
+              <b>Components — Tier 3</b> <a href="#">Steel Ingot</a> · <a href="#">Steel Beam</a> · <a href="#">Steel Pipe</a> · <a href="#">Versatile Framework</a><br>
+              <b>Components — Tier 4</b> <a href="#">Encased Industrial Beam</a> · <a href="#">Stator</a> · <a href="#">Motor</a> · <a href="#">Automated Wiring</a><br>
+              <b>Components — Tier 5</b> <a href="#">Plastic</a> · <a href="#">Rubber</a> · <a href="#">Polymer Resin</a> · <a href="#">Petroleum Coke</a> · <a href="#">Circuit Board</a> · <a href="#">Fuel</a> · <a href="#">Heavy Oil Residue</a> · <a href="#">Liquid Biofuel</a> · <a href="#">Empty Canister</a><br>
+              <b>Components — Tier 6</b> <a href="#">Computer</a> · <a href="#">Heavy Modular Frame</a> · <a href="#">Modular Engine</a> · <a href="#">Adaptive Control Unit</a><br>
+              <b>Components — Tier 7</b> <a href="#">Alumina Solution</a> · <a href="#">Aluminum Scrap</a> · <a href="#">Aluminum Ingot</a> · <a href="#">Alclad Aluminum Sheet</a> · <a href="#">Aluminum Casing</a> · <a href="#">Radio Control Unit</a> · <a href="#">Sulfuric Acid</a> · <a href="#">Battery</a> · <a href="#">Supercomputer</a> · <a href="#">Assembly Director System</a><br>
+              <b>Components — Tier 8</b> <a href="#">Encased Uranium Cell</a> · <a href="#">Electromagnetic Control Rod</a> · <a href="#">Uranium Fuel Rod</a> · <a href="#">Uranium Waste</a> · <a href="#">Magnetic Field Generator</a> · <a href="#">Empty Fluid Tank</a> · <a href="#">Heat Sink</a> · <a href="#">Cooling System</a> · <a href="#">Fused Modular Frame</a> · <a href="#">Turbo Motor</a> · <a href="#">Thermal Propulsion Rocket</a> · <a href="#">Nitric Acid</a> · <a href="#">Non-Fissile Uranium</a> · <a href="#">Plutonium Pellet</a> · <a href="#">Encased Plutonium Cell</a> · <a href="#">Plutonium Fuel Rod</a> · <a href="#">Plutonium Waste</a> · <a href="#">Copper Powder</a> · <a href="#">Pressure Conversion Cube</a> · <a href="#">Nuclear Pasta</a><br>
+              <b>Components — Tier 9</b> <a href="#">Diamonds</a> · <a href="#">Time Crystal</a> · <a href="#">Ficsite Ingot</a> · <a href="#">Ficsite Trigon</a> · <a href="#">Biochemical Sculptor</a> · <a href="#">Excited Photonic Matter</a> · <a href="#">Dark Matter Residue</a> · <a href="#">Dark Matter Crystal</a> · <a href="#">Superposition Oscillator</a> · <a href="#">Neural-Quantum Processor</a> · <a href="#">AI Expansion Server</a> · <a href="#">Singularity Cell</a> · <a href="#">Ballistic Warp Drive</a> · <a href="#">Ficsonium</a> · <a href="#">Ficsonium Fuel Rod</a><br>
+              <b>MAM</b> <a href="#">Power Shard</a> · <a href="#">Alien Protein</a> · <a href="#">Alien DNA Capsule</a> · <a href="#">Fabric</a> · <a href="#">Caterium Ingot</a> · <a href="#">Quickwire</a> · <a href="#">AI Limiter</a> · <a href="#">High-Speed Connector</a> · <a href="#">Quartz Crystal</a> · <a href="#">Silica</a> · <a href="#">Crystal Oscillator</a> · <a href="#">Dissolved Silica</a> · <a href="#">Black Powder</a> · <a href="#">Compacted Coal</a> · <a href="#">Turbofuel</a> · <a href="#">Smokeless Powder</a> · <a href="#">Rocket Fuel</a> · <a href="#">Ionized Fuel</a> · <a href="#">Reanimated SAM</a> · <a href="#">SAM Fluctuator</a> · <a href="#">Alien Power Matrix</a><br>
+              <b>Equipment — Milestones</b> <a href="#">Xeno-Zapper</a> · <a href="#">Portable Miner</a> · <a href="#">Object Scanner</a> · <a href="#">Chainsaw</a> · <a href="#">Xeno-Basher</a> · <a href="#">Jetpack</a> · <a href="#">Hoverpack</a> · <a href="#">Gas Mask</a> · <a href="#">Hazmat Suit</a><br>
+              <b>Equipment — MAM</b> <a href="#">Blade Runners</a> · <a href="#">Parachute</a> · <a href="#">Medicinal Inhaler</a> · <a href="#">Rebar Gun</a> · <a href="#">Zipline</a> · <a href="#">Gas Mask</a> · <a href="#">Nobelisk Detonator</a> · <a href="#">Rifle</a><br>
+              <b>AWESOME Shop</b> <a href="#">Boom Box</a> · <a href="#">Cup</a> · <a href="#">Factory Cart</a> · <a href="#">Statues</a>
+            </div></details>
+            <details><summary><a href="https://satisfactory.wiki.gg/wiki/Flora">Flora</a> and <a href="https://satisfactory.wiki.gg/wiki/Fauna">Fauna</a> <span>[Expand]</span></summary><div class="nav-row">
+              <b>Passive fauna</b> <a href="#">Lizard Doggo</a> · <a href="#">Beetle</a> · <a href="#">Non Flying Bird</a> · <a href="#">Flying Bird</a> · <a href="#">Space Giraffe-Tick-Penguin-Whale Thing</a> · <a href="#">Leaf Bug</a> · <a href="#">Grass Sprite</a> · <a href="#">Cave Bat</a> · <a href="#">Giant Flying Manta</a> · <a href="#">Lake Shark</a><br>
+              <b>Aggressive fauna</b> <a href="#">Fluffy-tailed Hog</a> · <a href="#">Cliff Hog</a> · <a href="#">Spitter</a> · <a href="#">Alpha Spitter</a> · <a href="#">Stinger</a> · <a href="#">Flying Crab</a> · <a href="#">Spore Flower</a> · <a href="#">Walker</a><br>
+              <b>Flora</b> <a href="#">Flora</a> · <a href="#">Leaves</a> · <a href="#">Flower Petals</a> · <a href="#">Bacon Agaric</a> · <a href="#">Paleberry</a> · <a href="#">Beryl Nut</a> · <a href="#">Mycelia</a> · <a href="#">Vine ladder</a> · <a href="#">Round Blue Cap Mushroom</a> · <a href="#">Huge Pink Jellyfish</a><br>
+              <b>Characters</b> <a href="#">ADA</a> · <a href="#">???</a> · <a href="#">Caterina Parks</a> · <a href="#">Steve</a> · <a href="#">FICSIT Inc.</a>
+            </div></details>
+            <details><summary><a href="https://satisfactory.wiki.gg/wiki/Vehicles">Transportation</a> <span>[Expand]</span></summary><div class="nav-row">
+              <b>Motor vehicles</b> <a href="#">Tractor</a> · <a href="#">Truck</a> · <a href="#">Explorer</a> · <a href="#">Factory Cart</a> · <a href="#">Golden Factory Cart</a> · <a href="#">Cyber Wagon</a> · <a href="#">Truck Station</a> · <a href="#">Vehicle Paths</a> · <a href="#">Drone Port</a> · <a href="#">Drone</a><br>
+              <b>Rail vehicles</b> <a href="#">Electric Locomotive</a> · <a href="#">Freight Car</a> · <a href="#">Train Station</a> · <a href="#">Freight Platform</a> · <a href="#">Fluid Freight Platform</a> · <a href="#">Empty Platform</a> · <a href="#">Empty Platform With Catwalk</a> · <a href="#">Railway</a> · <a href="#">Railroad Switch Control</a> · <a href="#">Buffer Stop</a> · <a href="#">Block Signal</a> · <a href="#">Path Signal</a><br>
+              <b>Hypertubes</b> <a href="#">Hypertube</a> · <a href="#">Hypertube Entrance</a> · <a href="#">Hypertube Support</a> · <a href="#">Stackable Hypertube Support</a> · <a href="#">Hypertube Wall Hole</a> · <a href="#">Hypertube Wall Support</a> · <a href="#">Hypertube Floor Hole</a> · <a href="#">Hypertube Junction</a> · <a href="#">Hypertube Branch</a><br>
+              <b>Pioneer transport</b> <a href="#">Jump Pad</a> · <a href="#">U-Jelly Landing Pad</a> · <a href="#">Personnel Elevator</a> · <a href="#">Main Portal</a> · <a href="#">Satellite Portal</a>
+            </div></details>
+            <details><summary><a href="https://satisfactory.wiki.gg/wiki/Category:Patch_notes">Patches</a> <span>[Expand]</span></summary><div class="nav-row">
+              <b>1.2</b> <a href="#">1.2.2.2</a> · <a href="#">1.2.3.0</a> · <a href="#">1.2.3.1</a> · <a href="#">1.2.4.0</a><br>
+              <b>Experimental 1.2</b> <a href="#">1.2.0.0</a> · <a href="#">1.2.1.0</a> · <a href="#">1.2.2.0</a> · <a href="#">1.2.2.1</a> · <a href="#">1.2.2.2 (Experimental)</a><br>
+              <b>1.1</b> <a href="#">1.1.1.0</a> · <a href="#">1.1.1.1</a> · <a href="#">1.1.1.2</a> · <a href="#">1.1.1.3</a> · <a href="#">1.1.1.4</a> · <a href="#">1.1.1.7</a> · <a href="#">1.1.2.0</a> · <a href="#">1.1.2.1</a> · <a href="#">1.1.2.2</a><br>
+              <b>Experimental 1.1</b> <a href="#">1.1.0.0</a> · <a href="#">1.1.0.1</a> · <a href="#">1.1.0.2</a> · <a href="#">1.1.0.3</a> · <a href="#">1.1.0.4</a> · <a href="#">1.1.0.5</a> · <a href="#">1.1.0.6</a> · <a href="#">1.1.1.5</a> · <a href="#">1.1.1.6</a> · <a href="#">1.1.3.0</a> · <a href="#">1.1.3.1</a><br>
+              <b>1.0</b> <a href="#">1.0</a> · <a href="#">1.0.0.1</a> · <a href="#">1.0.0.2</a> · <a href="#">1.0.0.3</a> · <a href="#">1.0.0.4</a> · <a href="#">1.0.0.5</a> · <a href="#">1.0.0.6</a> · <a href="#">1.0.0.7</a> · <a href="#">1.0.1.0</a> · <a href="#">1.0.1.1</a> · <a href="#">1.0.1.2</a> · <a href="#">1.0.1.3</a> · <a href="#">1.0.1.4</a><br>
+              <b>Experimental 1.0</b> <a href="#">1.0.1.5</a> · <a href="#">1.0.1.6</a><br>
+              <b>Update 8</b> <a href="#">0.8.3.0</a> · <a href="#">0.8.3.2</a> · <a href="#">0.8.3.3</a><br>
+              <b>Experimental Update 8</b> <a href="#">0.8.0.0</a> · <a href="#">0.8.0.1</a> · <a href="#">0.8.0.2</a> · <a href="#">0.8.0.3</a> · <a href="#">0.8.0.4</a> · <a href="#">0.8.0.5</a> · <a href="#">0.8.1.0</a> · <a href="#">0.8.1.1</a> · <a href="#">0.8.1.2</a> · <a href="#">0.8.1.3</a> · <a href="#">0.8.2.0</a> · <a href="#">0.8.2.1</a> · <a href="#">0.8.2.2</a> · <a href="#">0.8.2.3</a> · <a href="#">0.8.2.4</a> · <a href="#">0.8.2.5</a> · <a href="#">0.8.2.6</a> · <a href="#">0.8.2.7</a> · <a href="#">0.8.2.8</a> · <a href="#">0.8.2.9</a> · <a href="#">0.8.3.1</a><br>
+              <b>Update 7</b> <a href="#">0.7.0.8</a> · <a href="#">0.7.1.1</a><br>
+              <b>Experimental Update 7</b> <a href="#">0.7.0.0</a> · <a href="#">0.7.0.1</a> · <a href="#">0.7.0.2</a> · <a href="#">0.7.0.3</a> · <a href="#">0.7.0.4</a> · <a href="#">0.7.0.5</a> · <a href="#">0.7.0.6</a> · <a href="#">0.7.0.7</a> · <a href="#">0.7.0.8 (Experimental)</a><br>
+              <b>Update 6</b> <a href="#">0.6.1.0</a> · <a href="#">0.6.1.1</a> · <a href="#">0.6.1.2</a> · <a href="#">0.6.1.3</a> · <a href="#">0.6.1.4</a> · <a href="#">0.6.1.5</a><br>
+              <b>Experimental Update 6</b> <a href="#">0.6.0.0</a> · <a href="#">0.6.0.1</a> · <a href="#">0.6.0.2</a> · <a href="#">0.6.0.3</a> · <a href="#">0.6.0.4</a> · <a href="#">0.6.0.5</a> · <a href="#">0.6.0.6</a> · <a href="#">0.6.0.7</a> · <a href="#">0.6.0.8</a> · <a href="#">0.6.0.9</a> · <a href="#">0.6.0.10</a> · <a href="#">0.6.0.11</a> · <a href="#">0.6.0.12</a> · <a href="#">0.6.0.13</a> · <a href="#">0.6.0.14</a> · <a href="#">0.6.0.15</a><br>
+              <b>Update 5</b> <a href="#">0.5.1.0</a> · <a href="#">0.5.1.1</a> · <a href="#">0.5.1.3</a> · <a href="#">0.5.1.4</a> · <a href="#">0.5.1.5</a> · <a href="#">0.5.1.7</a> · <a href="#">0.5.1.8</a> · <a href="#">0.5.1.10</a> · <a href="#">0.5.2.0</a> · <a href="#">0.5.2.1</a><br>
+              <b>Experimental Update 5</b> <a href="#">0.5.0.0</a> · <a href="#">0.5.0.1</a> · <a href="#">0.5.0.2</a> · <a href="#">0.5.0.3</a> · <a href="#">0.5.0.4</a> · <a href="#">0.5.0.5</a> · <a href="#">0.5.0.6</a> · <a href="#">0.5.0.7</a> · <a href="#">0.5.0.8</a> · <a href="#">0.5.0.9</a> · <a href="#">0.5.0.10</a> · <a href="#">0.5.0.11</a> · <a href="#">0.5.0.12</a> · <a href="#">0.5.0.13</a> · <a href="#">0.5.0.14</a> · <a href="#">0.5.1.2</a> · <a href="#">0.5.1.6</a> · <a href="#">0.5.1.9</a> · <a href="#">0.5.1.11</a> · <a href="#">0.5.1.12</a> · <a href="#">0.5.1.13</a><br>
+              <b>Update 4</b> <a href="#">0.4.1.0</a> · <a href="#">0.4.1.1</a> · <a href="#">0.4.2.0</a> · <a href="#">0.4.2.2</a> · <a href="#">0.4.2.5</a> · <a href="#">0.4.2.7</a> · <a href="#">0.4.2.9</a> · <a href="#">0.4.2.11</a><br>
+              <b>Experimental Update 4</b> <a href="#">0.4.0.0</a> · <a href="#">0.4.0.1</a> · <a href="#">0.4.0.2</a> · <a href="#">0.4.0.3</a> · <a href="#">0.4.0.4</a> · <a href="#">0.4.0.5</a> · <a href="#">0.4.0.6</a> · <a href="#">0.4.0.7</a> · <a href="#">0.4.0.8</a> · <a href="#">0.4.0.9</a> · <a href="#">0.4.0.10</a> · <a href="#">0.4.0.11</a> · <a href="#">0.4.0.12</a> · <a href="#">0.4.2.1</a> · <a href="#">0.4.2.2 (Experimental)</a> · <a href="#">0.4.2.3</a> · <a href="#">0.4.2.4</a> · <a href="#">0.4.2.6</a> · <a href="#">0.4.2.8</a> · <a href="#">0.4.2.10</a> · <a href="#">0.4.3.0</a> · <a href="#">0.4.3.1</a><br>
+              <b>Update 3 &amp; Steam Release</b> <a href="#">0.3.3.3</a> · <a href="#">0.3.3.4</a> · <a href="#">0.3.3.5</a> · <a href="#">0.3.3.6</a> · <a href="#">0.3.4.14</a> · <a href="#">0.3.4.15</a> · <a href="#">0.3.4.16</a> · <a href="#">0.3.5</a> · <a href="#">0.3.5.1</a> · <a href="#">0.3.5.2</a> · <a href="#">0.3.5.3</a> · <a href="#">0.3.5.4</a> · <a href="#">0.3.5.6</a> · <a href="#">0.3.6.5</a> · <a href="#">0.3.7</a> · <a href="#">0.3.7.1</a> · <a href="#">0.3.7.2</a> · <a href="#">0.3.7.3</a> · <a href="#">0.3.7.4</a> · <a href="#">0.3.7.5</a> · <a href="#">0.3.7.6</a> · <a href="#">0.3.7.7</a><br>
+              <b>Update 2</b> <a href="#">0.2.1</a> · <a href="#">0.2.1.1</a> · <a href="#">0.2.1.2</a> · <a href="#">0.2.1.3</a> · <a href="#">0.2.1.4</a> · <a href="#">0.2.1.5</a> · <a href="#">0.2.1.7</a> · <a href="#">0.2.1.10</a> · <a href="#">0.2.1.12</a> · <a href="#">0.2.1.17</a> · <a href="#">0.2.1.18</a><br>
+              <b>Update 1</b> <a href="#">0.1.11</a> · <a href="#">0.1.12</a> · <a href="#">0.1.13</a><br>
+              <b>Early Access Release</b> <a href="#">0.1</a> · <a href="#">0.101</a> · <a href="#">0.102</a> · <a href="#">0.103</a> · <a href="#">0.104</a><br>
+              <b>Closed Alpha</b> <a href="#">2018-10-11</a> · <a href="#">2018-10-17</a> · <a href="#">2018-10-19</a> · <a href="#">2018-10-27</a> · <a href="#">Alpha Test Weekend</a>
+            </div></details>
+          </div>
+        </div>
+      </section>
+
+            <div class="community">
+        <div class="panel">
+          <div class="panel-header"><h2>Community</h2></div>
+          <div class="panel-body">
+            <div class="community-buttons">
+              <a href="https://satisfactory.wiki.gg/wiki/Special:UserLogin/signup">Register</a>
+              <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki:Community_portal">How to help</a>
+              <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki:Style_guide">Style guide</a>
+            </div>
+            <div class="create-intro">
+              <p>To write a new article, just enter the article title in the box below or in the search box at the top of the page.</p>
+              <form class="create-page" action="#">
+                <input type="text" aria-label="Article title">
+                <button type="submit">Create page</button>
+              </form>
+            </div>
+            <div class="community-help">
+              <ul>
+                <li><strong>Adding content</strong>
+                  <ul>
+                    <li>If you are unsure of what to do or how to create a page, search for a few articles on the same topic and see what they look like. You can always view the source code in a wiki and learn from what others have done.</li>
+                    <li>An edit doesn't have to be massive; if you feel you don't want to create whole articles, then just fixing spelling errors and broken links is enough.</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+            <div class="page-meta-note">Main page sections: <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/Top_section">Top</a>· <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/Flex_section">Flex</a> · <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/Nav_section">Nav</a> · <a href="https://satisfactory.wiki.gg/wiki/Satisfactory_Wiki/Bottom_section">Bottom</a>. Changes for the main page can be proposed <a href="https://satisfactory.wiki.gg/wiki/Talk:Satisfactory_Wiki">here</a>.</div>
+      <div class="category-box">
+        Category: <a href="https://satisfactory.wiki.gg/wiki/Special:Categories">Satisfactory Wiki</a>
+      </div>
+
+            <footer>
+        <p>This page was last edited on 8 November 2024, at 01:21.</p>
+        <p>Page content is under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0"> Creative Commons Attribution-Non-Commercial-ShareAlike 4.0 License </a> unless otherwise noted.</p>
+        <p>
+          <a href="https://www.indie.io/terms-of-service">Terms of Service</a>
+          <a href="https://www.indie.io/privacy-policy">Privacy policy</a>
+          <a href="https://support.wiki.gg/">Support Wiki</a>
+          <a href="https://wiki.gg/go/servicedesk">Send a ticket to wiki.gg</a>
+          <a href="https://wikiggstatus.com/">Status page</a>
+          <a href="https://satisfactory.wiki.gg/#">Manage cookie settings</a>
+        </p>
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
