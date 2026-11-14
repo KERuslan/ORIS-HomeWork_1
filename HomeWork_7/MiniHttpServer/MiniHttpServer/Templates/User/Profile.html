@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>Профиль</title>
+<h1>Профиль пользователя: ${Name}</h1>
+<p>Группа: ${Group}</p>
+$if(IsActive)
+<p>Пользователь активен</p>
+$else
+<p>Пользователь неактивен</p>
+$endif
+<a href="/user/list">Все пользователи</a>
+</html>

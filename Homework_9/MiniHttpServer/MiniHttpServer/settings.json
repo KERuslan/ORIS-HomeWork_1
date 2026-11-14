@@ -1,0 +1,5 @@
+{
+  "Port": 8080,
+  "PublicDirectoryPath": "static",
+  "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=OrisDb;Integrated Security=True;Encrypt=True;TrustServerCertificate=True"
+}
